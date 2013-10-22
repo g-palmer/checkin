@@ -23,23 +23,20 @@ var geoFind = function() {
     var coords = pos.coords,
       date = new Date(pos.timestamp);
 
-    $output.firstChild.innerHTML = '\
-      <span>Current latitude: ' + coords.latitude + '</span><br>\
-      <span>Current longitude: ' + coords.longitude + '</span><br>\
-      <span>Accuracy within: ' + coords.accuracy + ' meters</span><br>\
-      <span>As of: ' + date + '</span><br>\
-      ';
+    if (coords.accuracy < 10) {
+      $output.firstChild.innerHTML = '\
+        <span>Current latitude: ' + coords.latitude + '</span><br>\
+        <span>Current longitude: ' + coords.longitude + '</span><br>\
+        <span>Accuracy within: ' + coords.accuracy + ' meters</span><br>\
+        <span>As of: ' + date + '</span><br>\
+        ';
 
-    var $mapElement = document.createElement('div');
-    $mapElement.innerHTML = '<img src="http://maps.googleapis.com/maps/api/staticmap?center='+coords.latitude+','+coords.longitude+'&zoom='+mapOptions.zoom+'&size='+mapOptions.size.width+'x'+mapOptions.size.height+'&markers=color:'+mapOptions.markers.style.color+'%7C'+coords.latitude+','+coords.longitude+'&sensor=true"></img>';
-    $output.appendChild($mapElement);
+      var $mapElement = document.createElement('div');
+      $mapElement.innerHTML = '<img src="http://maps.googleapis.com/maps/api/staticmap?center='+coords.latitude+','+coords.longitude+'&zoom='+mapOptions.zoom+'&size='+mapOptions.size.width+'x'+mapOptions.size.height+'&markers=color:'+mapOptions.markers.style.color+'%7C'+coords.latitude+','+coords.longitude+'&sensor=true"></img>';
+      $output.appendChild($mapElement);
 
-    // $('<p>').text('Current latitude: ' + coords.latitude).appendTo($output);
-    // $('<p>').text('Current longitude: ' + coords.longitude).appendTo($output);
-    // $('<p>').text('Accuracy: ' + coords.accuracy + ' meters').appendTo($output);
-    // $('<p>').text('As of: ' + date).appendTo($output);
-
-    // $('<img>').attr('src', 'http://maps.googleapis.com/maps/api/staticmap?center='+coords.latitude+','+coords.longitude+'&zoom='+mapOptions.zoom+'&size='+mapOptions.size.width+'x'+mapOptions.size.height+'&markers=color:'+mapOptions.markers.style.color+'%7C'+coords.latitude+','+coords.longitude+'&sensor=true').appendTo($output);
+      window.navigator.geolocation.clearWatch(getPosition);
+    }
   };
 
   var error = function(error) {
@@ -51,7 +48,12 @@ var geoFind = function() {
     timeout: 5000
   };
 
-
-  window.navigator.geolocation.getCurrentPosition(success, error, getPosOptions);
+  var getPosition = window.navigator.geolocation.watchPosition(success, error, getPosOptions);
 };
 
+    // $('<p>').text('Current latitude: ' + coords.latitude).appendTo($output);
+    // $('<p>').text('Current longitude: ' + coords.longitude).appendTo($output);
+    // $('<p>').text('Accuracy: ' + coords.accuracy + ' meters').appendTo($output);
+    // $('<p>').text('As of: ' + date).appendTo($output);
+
+    // $('<img>').attr('src', 'http://maps.googleapis.com/maps/api/staticmap?center='+coords.latitude+','+coords.longitude+'&zoom='+mapOptions.zoom+'&size='+mapOptions.size.width+'x'+mapOptions.size.height+'&markers=color:'+mapOptions.markers.style.color+'%7C'+coords.latitude+','+coords.longitude+'&sensor=true').appendTo($output);
